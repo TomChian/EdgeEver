@@ -222,11 +222,11 @@ const MOBILE_THEME_OPTIONS: Array<{
   { id: "aurora", labelZh: "极光渐变", labelEn: "Aurora", previewBg: "#a7f3d0", dotColor: "#0d9488" },
   { id: "sunset", labelZh: "暮色晚霞", labelEn: "Sunset", previewBg: "#fde68a", dotColor: "#ea580c" },
   { id: "midnight", labelZh: "暗夜曜石", labelEn: "Midnight", previewBg: "#090d16", dotColor: "#34d399" },
+  { id: "editorial", labelZh: "新闻特写", labelEn: "Editorial", previewBg: "#f1f3f5", dotColor: "#111827" },
+  { id: "terminal", labelZh: "极客终端", labelEn: "Terminal", previewBg: "#0d1117", dotColor: "#00f0a0" },
+  { id: "film", labelZh: "银盐胶片", labelEn: "Film", previewBg: "#f4ede4", dotColor: "#ea580c" },
   { id: "mint", labelZh: "薄荷", labelEn: "Mint", previewBg: "#ecfdf5", dotColor: "#059669" },
   { id: "lavender", labelZh: "紫雾流光", labelEn: "Lavender", previewBg: "#f5f3ff", dotColor: "#7c3aed" },
-  { id: "notepad", labelZh: "经典便签", labelEn: "Notepad", previewBg: "#fbf7ee", dotColor: "#c2410c" },
-  { id: "xuan", labelZh: "水墨宣纸", labelEn: "Rice Paper", previewBg: "#f7f6f2", dotColor: "#b91c1c" },
-  { id: "polaroid", labelZh: "艺术拍立得", labelEn: "Polaroid", previewBg: "#f5f4ef", dotColor: "#18181b" },
 ];
 
 const MOBILE_FONT_OPTIONS: Array<{ id: NoteImageFontStyle; labelZh: string; labelEn: string }> = [

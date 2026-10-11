@@ -39,11 +39,11 @@ const THEME_OPTIONS: Array<{
   { id: "aurora", previewBg: "linear-gradient(135deg, #a7f3d0, #67e8f9, #c4b5fd)", dotColor: "#0d9488" },
   { id: "sunset", previewBg: "linear-gradient(135deg, #fde68a, #fbcfe8, #fed7aa)", dotColor: "#ea580c" },
   { id: "midnight", previewBg: "linear-gradient(135deg, #090d16, #1e1b4b)", dotColor: "#34d399", isDark: true },
+  { id: "editorial", previewBg: "linear-gradient(135deg, #f8f9fa, #e9ecef)", dotColor: "#111827" },
+  { id: "terminal", previewBg: "linear-gradient(135deg, #0d1117, #161b22)", dotColor: "#00f0a0", isDark: true },
+  { id: "film", previewBg: "linear-gradient(135deg, #f4ede4, #dfd0bf)", dotColor: "#ea580c" },
   { id: "mint", previewBg: "linear-gradient(135deg, #ecfdf5, #a7f3d0)", dotColor: "#059669" },
   { id: "lavender", previewBg: "linear-gradient(135deg, #f5f3ff, #ddd6fe, #c4b5fd)", dotColor: "#7c3aed" },
-  { id: "notepad", previewBg: "linear-gradient(135deg, #fbf7ee, #f4ede0)", dotColor: "#c2410c" },
-  { id: "xuan", previewBg: "linear-gradient(135deg, #f7f6f2, #ebe8e1)", dotColor: "#b91c1c" },
-  { id: "polaroid", previewBg: "linear-gradient(135deg, #f5f4ef, #eae7de)", dotColor: "#18181b" },
 ];
 
 const FONT_OPTIONS: Array<{ id: NoteImageFontStyle; labelKey: string }> = [

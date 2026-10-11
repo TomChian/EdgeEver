@@ -1,6 +1,6 @@
 export type NoteImageFormat = "jpeg" | "png";
-export type NoteImageTheme = "slate" | "aurora" | "sunset" | "midnight" | "mint" | "notepad" | "xuan" | "lavender" | "polaroid";
-export type NoteImageBackground = NoteImageTheme | "warm";
+export type NoteImageTheme = "slate" | "aurora" | "sunset" | "midnight" | "editorial" | "terminal" | "film" | "mint" | "lavender";
+export type NoteImageBackground = NoteImageTheme | "warm" | "notepad" | "xuan" | "polaroid";
 export type NoteImageFontStyle = "sans" | "serif" | "mono";
 export type NoteImageFontSize = "sm" | "md" | "lg";
 export type NoteImageCardWidth = "compact" | "standard" | "wide";
@@ -41,6 +41,9 @@ export const NOTE_IMAGE_BACKGROUND_COLORS: Record<NoteImageBackground, string> =
   aurora: "#a7f3d0",
   sunset: "#fde68a",
   midnight: "#090d16",
+  editorial: "#f1f3f5",
+  terminal: "#0d1117",
+  film: "#f4ede4",
   mint: "#ecfdf5",
   notepad: "#fbf7ee",
   xuan: "#f7f6f2",
@@ -197,54 +200,6 @@ export const NOTE_IMAGE_THEMES: Record<NoteImageTheme, ThemeStyleConfig> = {
     brandText: "#042f2e",
     brandMark: "#059669",
   },
-  notepad: {
-    canvasBg: "linear-gradient(135deg, #fbf7ee 0%, #f4ede0 100%)",
-    cardBg: "#fefdfa",
-    cardBorder: "1px solid rgba(220, 205, 180, 0.85)",
-    cardShadow: "0 2px 4px rgba(100, 80, 50, 0.04), 0 16px 36px -8px rgba(100, 80, 50, 0.12), 0 28px 64px -16px rgba(100, 80, 50, 0.08)",
-    textColor: "#2c2419",
-    headingColor: "#1a140d",
-    metaColor: "#8c7b68",
-    metaBg: "rgba(240, 230, 214, 0.6)",
-    metaBorder: "#dfd3c3",
-    accentColor: "#c2410c",
-    accentSubtle: "rgba(194, 65, 12, 0.15)",
-    linkBg: "rgba(194, 65, 12, 0.08)",
-    dividerColor: "#e8decb",
-    codeBg: "#f5efe4",
-    codeBorder: "#e2d5c3",
-    codeColor: "#1a140d",
-    quoteBg: "rgba(248, 241, 230, 0.85)",
-    quoteBorder: "#d97706",
-    tableThBg: "#f5ede0",
-    tableBorder: "#dfd3c3",
-    brandText: "#1a140d",
-    brandMark: "#c2410c",
-  },
-  xuan: {
-    canvasBg: "linear-gradient(135deg, #f7f6f2 0%, #ebe8e1 100%)",
-    cardBg: "#fdfcf7",
-    cardBorder: "1px solid rgba(210, 205, 195, 0.8)",
-    cardShadow: "0 20px 48px -12px rgba(40, 35, 30, 0.1), 0 4px 16px rgba(40, 35, 30, 0.03)",
-    textColor: "#242220",
-    headingColor: "#0f0e0d",
-    metaColor: "#736d66",
-    metaBg: "#f0eee8",
-    metaBorder: "#dedad2",
-    accentColor: "#b91c1c",
-    accentSubtle: "rgba(185, 28, 28, 0.15)",
-    linkBg: "rgba(185, 28, 28, 0.08)",
-    dividerColor: "#e3dfd6",
-    codeBg: "#f4f2eb",
-    codeBorder: "#dedad2",
-    codeColor: "#0f0e0d",
-    quoteBg: "rgba(245, 243, 238, 0.85)",
-    quoteBorder: "#b91c1c",
-    tableThBg: "#edeae2",
-    tableBorder: "#dedad2",
-    brandText: "#0f0e0d",
-    brandMark: "#b91c1c",
-  },
   lavender: {
     canvasBg: "linear-gradient(135deg, #f5f3ff 0%, #ede9fe 50%, #ddd6fe 100%)",
     cardBg: "#ffffff",
@@ -269,29 +224,78 @@ export const NOTE_IMAGE_THEMES: Record<NoteImageTheme, ThemeStyleConfig> = {
     brandText: "#1e1b4b",
     brandMark: "#7c3aed",
   },
-  polaroid: {
-    canvasBg: "linear-gradient(145deg, #f5f4ef 0%, #ebe8e0 50%, #e2dfd5 100%)",
+  editorial: {
+    canvasBg: "linear-gradient(145deg, #f1f3f5 0%, #e9ecef 50%, #dee2e6 100%)",
     cardBg: "#ffffff",
-    cardBorder: "1px solid rgba(220, 216, 206, 0.9)",
-    cardShadow: "0 2px 5px rgba(28, 25, 23, 0.03), 0 16px 36px -6px rgba(28, 25, 23, 0.09), 0 32px 64px -12px rgba(28, 25, 23, 0.06)",
-    textColor: "#27272a",
-    headingColor: "#18181b",
-    metaColor: "#71717a",
-    metaBg: "#f4f4f5",
-    metaBorder: "#e4e4e7",
-    accentColor: "#18181b",
-    accentSubtle: "rgba(24, 24, 27, 0.12)",
-    linkBg: "rgba(24, 24, 27, 0.06)",
-    dividerColor: "#e4e4e7",
-    codeBg: "#fafafa",
-    codeBorder: "#e4e4e7",
-    codeColor: "#18181b",
-    quoteBg: "rgba(244, 244, 245, 0.8)",
-    quoteBorder: "#18181b",
-    tableThBg: "#f4f4f5",
-    tableBorder: "#e4e4e7",
-    brandText: "#18181b",
-    brandMark: "#16a06e",
+    cardBorder: "1px solid #111827",
+    cardShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 20px 40px -8px rgba(0, 0, 0, 0.12)",
+    textColor: "#1f2937",
+    headingColor: "#111827",
+    metaColor: "#4b5563",
+    metaBg: "#f3f4f6",
+    metaBorder: "#111827",
+    accentColor: "#111827",
+    accentSubtle: "rgba(17, 24, 39, 0.15)",
+    linkBg: "rgba(17, 24, 39, 0.06)",
+    dividerColor: "#111827",
+    codeBg: "#f9fafb",
+    codeBorder: "#d1d5db",
+    codeColor: "#111827",
+    quoteBg: "#f9fafb",
+    quoteBorder: "#111827",
+    tableThBg: "#f3f4f6",
+    tableBorder: "#d1d5db",
+    brandText: "#111827",
+    brandMark: "#111827",
+  },
+  terminal: {
+    canvasBg: "linear-gradient(145deg, #0d1117 0%, #161b22 60%, #090d13 100%)",
+    cardBg: "#0d1117",
+    cardBorder: "1px solid #30363d",
+    cardShadow: "0 0 0 1px rgba(0, 255, 170, 0.15), 0 24px 60px -12px rgba(0, 0, 0, 0.95)",
+    textColor: "#c9d1d9",
+    headingColor: "#58a6ff",
+    metaColor: "#8b949e",
+    metaBg: "#161b22",
+    metaBorder: "#30363d",
+    accentColor: "#00f0a0",
+    accentSubtle: "rgba(0, 240, 160, 0.2)",
+    linkBg: "rgba(0, 240, 160, 0.1)",
+    dividerColor: "#21262d",
+    codeBg: "#161b22",
+    codeBorder: "#30363d",
+    codeColor: "#00f0a0",
+    quoteBg: "rgba(88, 166, 255, 0.08)",
+    quoteBorder: "#58a6ff",
+    tableThBg: "#161b22",
+    tableBorder: "#30363d",
+    brandText: "#f0f6fc",
+    brandMark: "#00f0a0",
+    isDark: true,
+  },
+  film: {
+    canvasBg: "linear-gradient(145deg, #f4ede4 0%, #eaddcf 50%, #dfd0bf 100%)",
+    cardBg: "#fcfbf9",
+    cardBorder: "1px solid rgba(197, 168, 137, 0.8)",
+    cardShadow: "0 2px 4px rgba(60, 45, 30, 0.04), 0 16px 36px -6px rgba(60, 45, 30, 0.11), 0 32px 64px -12px rgba(60, 45, 30, 0.08)",
+    textColor: "#292524",
+    headingColor: "#1c1917",
+    metaColor: "#78716c",
+    metaBg: "#f5eee6",
+    metaBorder: "#e7d9cb",
+    accentColor: "#ea580c",
+    accentSubtle: "rgba(234, 88, 12, 0.15)",
+    linkBg: "rgba(234, 88, 12, 0.08)",
+    dividerColor: "#e7d9cb",
+    codeBg: "#f5eee6",
+    codeBorder: "#e7d9cb",
+    codeColor: "#9a3412",
+    quoteBg: "rgba(254, 243, 199, 0.6)",
+    quoteBorder: "#d97706",
+    tableThBg: "#f5eee6",
+    tableBorder: "#e7d9cb",
+    brandText: "#1c1917",
+    brandMark: "#ea580c",
   },
 };
 
@@ -360,7 +364,11 @@ export const NOTE_IMAGE_FONT_SIZES: Record<
 
 export const resolveTheme = (background?: NoteImageBackground, theme?: NoteImageTheme): NoteImageTheme => {
   if (theme && NOTE_IMAGE_THEMES[theme]) return theme;
+  if (theme === ("notepad" as unknown as NoteImageTheme) || theme === ("xuan" as unknown as NoteImageTheme)) return "editorial";
+  if (theme === ("polaroid" as unknown as NoteImageTheme)) return "film";
   if (background === "warm") return "sunset";
+  if (background === "notepad" || background === "xuan") return "editorial";
+  if (background === "polaroid") return "film";
   if (background && NOTE_IMAGE_THEMES[background as NoteImageTheme]) return background as NoteImageTheme;
   return "aurora";
 };
@@ -430,9 +438,8 @@ export const buildNoteImageCardMarkup = ({
   readingTimeText?: string;
 }) => {
   const isMono = fontStyle === "mono";
-  const isNotepad = theme === "notepad";
 
-  const terminalBarHtml = isMono
+  const terminalBarHtml = (isMono || theme === "terminal")
     ? `<div class="edgeever-terminal-header">
         <span class="edgeever-terminal-dot dot-red"></span>
         <span class="edgeever-terminal-dot dot-yellow"></span>
@@ -441,7 +448,7 @@ export const buildNoteImageCardMarkup = ({
       </div>`
     : "";
 
-  const tearStripHtml = isNotepad ? `<div class="edgeever-card-tear-strip"></div>` : "";
+  const tearStripHtml = "";
 
   const hasMeta = (showNotebook && Boolean(notebook)) || (showUpdatedAt && Boolean(updatedAt)) || (showTags && tags.length > 0) || showReadingTime;
   let metaHtml = "";
@@ -997,33 +1004,51 @@ export const generateCardCss = ({
       color: var(--ee-brand-text);
     }
 
-    ${theme === "polaroid" ? `
-    .edgeever-image-card[data-theme="polaroid"] {
-      padding-bottom: 56px;
-      border-radius: 12px;
-    }
-    ` : ""}
-
     ${theme === "midnight" ? `
     .edgeever-image-card[data-theme="midnight"] {
       box-shadow: 0 0 0 1px rgba(52, 211, 153, 0.16), 0 24px 60px -12px rgba(0, 0, 0, 0.82);
     }
     ` : ""}
 
-    ${theme === "notepad" ? `
-    .edgeever-image-card[data-theme="notepad"] .edgeever-card-body p,
-    .edgeever-image-card[data-theme="notepad"] .edgeever-card-body li {
-      background-image: linear-gradient(to bottom, transparent calc(100% - 1px), #e8decb calc(100% - 1px));
-      background-size: 100% 1.86em;
-      background-position: 0 0.15em;
+    ${theme === "editorial" ? `
+    .edgeever-image-card[data-theme="editorial"] {
+      border: 2px solid #111827;
+      border-radius: 4px;
+      box-shadow: 6px 6px 0px #111827;
     }
-    .edgeever-card-tear-strip {
-      height: 8px;
-      background-image: radial-gradient(circle at 50% 0, transparent 4px, var(--ee-card-bg) 4.5px);
-      background-size: 14px 8px;
-      background-repeat: repeat-x;
-      margin: -24px -28px 16px -28px;
-      opacity: 0.9;
+    .edgeever-image-card[data-theme="editorial"] .edgeever-card-header {
+      border-bottom: 2px solid #111827;
+      padding-bottom: 12px;
+      margin-bottom: 24px;
+    }
+    .edgeever-image-card[data-theme="editorial"] .edgeever-card-title {
+      font-family: "Songti SC", "Noto Serif SC", "Source Han Serif SC", Georgia, serif;
+      letter-spacing: -0.02em;
+    }
+    ` : ""}
+
+    ${theme === "terminal" ? `
+    .edgeever-image-card[data-theme="terminal"] {
+      border: 1px solid rgba(0, 240, 160, 0.35);
+      border-radius: 12px;
+      box-shadow: 0 0 30px -5px rgba(0, 240, 160, 0.15), 0 24px 60px -12px rgba(0, 0, 0, 0.95);
+      background-image: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.03), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.03));
+      background-size: 100% 3px, 6px 100%;
+    }
+    .edgeever-image-card[data-theme="terminal"] .edgeever-terminal-header {
+      border-bottom: 1px solid rgba(0, 240, 160, 0.2);
+      background: #161b22;
+    }
+    ` : ""}
+
+    ${theme === "film" ? `
+    .edgeever-image-card[data-theme="film"] {
+      border: 1px solid rgba(214, 186, 155, 0.85);
+      border-radius: 14px;
+      box-shadow: 0 2px 8px rgba(60, 45, 30, 0.05), 0 20px 48px -10px rgba(60, 45, 30, 0.12);
+    }
+    .edgeever-image-card[data-theme="film"] .edgeever-card-title {
+      color: #1c1917;
     }
     ` : ""}
   `;
