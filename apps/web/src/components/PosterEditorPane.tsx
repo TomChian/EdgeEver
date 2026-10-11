@@ -47,6 +47,7 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
@@ -1445,6 +1446,16 @@ export default function PosterEditorPane({
             {toast}
           </span>
         )}
+        {document.sourceMemoId && (
+          <Button
+            size="sm"
+            variant="ghost"
+            disabled={!editable || saving}
+            onClick={() => void insertInSource()}
+          >
+            {t("poster.insertSource")}
+          </Button>
+        )}
         {toolButton(
           t("poster.save"),
           saving ? (
@@ -1581,6 +1592,39 @@ export default function PosterEditorPane({
             >
               {t("poster.design.customSize")}
             </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+              <Button size="sm" variant="ghost" className="shrink-0 gap-1 tabular-nums" aria-label={t("poster.design.zoom")}>
+                {Math.round(zoom * 100)}%
+                <ChevronDown className="h-3.5 w-3.5" />
+              </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            <DropdownMenuLabel className="font-normal text-muted-foreground">
+              {document.width} × {document.height} px
+            </DropdownMenuLabel>
+            <DropdownMenuItem onSelect={() => { setAutoFit(true); setZoom(fitZoom); }}>
+              {t("poster.design.fit")}
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem onSelect={() => { setAutoFit(false); setZoom(Math.max(0.1, zoom / 1.2)); }}>
+              {t("poster.design.zoomOut")}
+            </DropdownMenuItem>
+            <DropdownMenuItem onSelect={() => { setAutoFit(false); setZoom(Math.min(2, zoom * 1.2)); }}>
+              {t("poster.design.zoomIn")}
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+            {[0.25, 0.5, 0.75, 1, 1.5, 2].map((value) => (
+              <DropdownMenuItem key={value} onSelect={() => { setAutoFit(false); setZoom(value); }}>
+                {value * 100}%
+              </DropdownMenuItem>
+            ))}
+            <DropdownMenuSeparator />
+            <p className="max-w-60 px-2 py-1.5 text-xs text-muted-foreground">
+              {t(selectedIds.length ? "poster.design.selectionCount" : "poster.design.canvasHint", { count: selectedIds.length })}
+            </p>
           </DropdownMenuContent>
         </DropdownMenu>
         <div className="mx-1 h-5 border-l" />
@@ -1978,75 +2022,6 @@ export default function PosterEditorPane({
           </aside>
         )}
       </div>
-      <footer className="flex h-11 shrink-0 items-center gap-2 border-t pl-4 pr-16 text-[11px] text-slate-500">
-        <span>
-          {document.width} × {document.height} px
-        </span>
-        <span className="hidden truncate md:inline">
-          ·{" "}
-          {t(
-            selectedIds.length
-              ? "poster.design.selectionCount"
-              : "poster.design.canvasHint",
-            { count: selectedIds.length },
-          )}
-        </span>
-        {document.sourceMemoId && (
-          <Button
-            size="sm"
-            variant="ghost"
-            disabled={!editable || saving}
-            onClick={() => void insertInSource()}
-          >
-            {t("poster.insertSource")}
-          </Button>
-        )}
-        <div className="flex-1" />
-        <button
-          className="h-7 w-7 rounded hover:bg-slate-100"
-          aria-label={t("poster.design.zoomOut")}
-          onClick={() => {
-            setAutoFit(false);
-            setZoom(Math.max(0.1, zoom / 1.2));
-          }}
-        >
-          −
-        </button>
-        <select
-          aria-label={t("poster.design.zoom")}
-          className="h-7 rounded border bg-card px-1 text-xs"
-          value={zoom.toFixed(3)}
-          onChange={(event) => {
-            if (event.target.value === "fit") {
-              setAutoFit(true);
-              setZoom(fitZoom);
-              return;
-            }
-            setAutoFit(false);
-            setZoom(Number(event.target.value));
-          }}
-        >
-          <option value={zoom.toFixed(3)}>{Math.round(zoom * 100)}%</option>
-          <option value="fit">{t("poster.design.fit")}</option>
-          {[0.25, 0.5, 0.75, 1, 1.5, 2]
-            .filter((value) => value.toFixed(3) !== zoom.toFixed(3))
-            .map((value) => (
-              <option key={value} value={value.toFixed(3)}>
-                {value * 100}%
-              </option>
-            ))}
-        </select>
-        <button
-          className="h-7 w-7 rounded hover:bg-slate-100"
-          aria-label={t("poster.design.zoomIn")}
-          onClick={() => {
-            setAutoFit(false);
-            setZoom(Math.min(2, zoom * 1.2));
-          }}
-        >
-          +
-        </button>
-      </footer>
       <Dialog open={exportOpen} onOpenChange={setExportOpen}>
         <DialogContent className="max-w-md">
           <DialogHeader>
