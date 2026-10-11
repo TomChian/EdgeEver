@@ -9,7 +9,6 @@ import {
   Hand,
   ImagePlus,
   LoaderCircle,
-  Maximize2,
   MousePointer2,
   PanelLeftClose,
   PanelRightClose,
@@ -1979,7 +1978,7 @@ export default function PosterEditorPane({
           </aside>
         )}
       </div>
-      <footer className="flex h-11 shrink-0 items-center gap-2 border-t px-4 text-[11px] text-slate-500">
+      <footer className="flex h-11 shrink-0 items-center gap-2 border-t pl-4 pr-16 text-[11px] text-slate-500">
         <span>
           {document.width} × {document.height} px
         </span>
@@ -2018,11 +2017,17 @@ export default function PosterEditorPane({
           className="h-7 rounded border bg-card px-1 text-xs"
           value={zoom.toFixed(3)}
           onChange={(event) => {
+            if (event.target.value === "fit") {
+              setAutoFit(true);
+              setZoom(fitZoom);
+              return;
+            }
             setAutoFit(false);
             setZoom(Number(event.target.value));
           }}
         >
           <option value={zoom.toFixed(3)}>{Math.round(zoom * 100)}%</option>
+          <option value="fit">{t("poster.design.fit")}</option>
           {[0.25, 0.5, 0.75, 1, 1.5, 2]
             .filter((value) => value.toFixed(3) !== zoom.toFixed(3))
             .map((value) => (
@@ -2041,17 +2046,6 @@ export default function PosterEditorPane({
         >
           +
         </button>
-        {toolButton(
-          t("poster.design.fit"),
-          <Maximize2 className="h-3.5 w-3.5" />,
-          () => {
-            setAutoFit(true);
-            setZoom(fitZoom);
-          },
-          false,
-          false,
-          true,
-        )}
       </footer>
       <Dialog open={exportOpen} onOpenChange={setExportOpen}>
         <DialogContent className="max-w-md">
