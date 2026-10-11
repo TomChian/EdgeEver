@@ -768,7 +768,7 @@ export default function InfographicEditorPane({
           variant="outline"
           size="icon"
           data-ai-assistant-launcher=""
-          className="absolute bottom-[calc(1.25rem+env(safe-area-inset-bottom))] right-5 z-30 size-11 rounded-full border-slate-200 bg-card text-slate-950 shadow-[0_8px_24px_rgba(15,23,42,0.14)] hover:bg-card hover:text-slate-950"
+          className="absolute bottom-[calc(1.25rem+env(safe-area-inset-bottom))] right-5 sm:bottom-[calc(2rem+env(safe-area-inset-bottom))] sm:right-8 z-30 size-11 rounded-full border-slate-200 bg-card text-slate-950 shadow-[0_8px_24px_rgba(15,23,42,0.14)] hover:bg-card hover:text-slate-950"
           aria-label={t("aiAssistant.open")}
           onClick={() => setAiSidebarOpen(true)}
         >

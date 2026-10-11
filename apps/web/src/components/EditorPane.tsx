@@ -4586,7 +4586,7 @@ const RichEditorPane = ({
               // The phone note view already has an edit button in this corner.
               isMobileViewport && !mobileEditingActive
                 ? "bottom-[calc(4.75rem+env(safe-area-inset-bottom))] right-4"
-                : "bottom-[calc(1.25rem+env(safe-area-inset-bottom))] right-5",
+                : "bottom-[calc(1.25rem+env(safe-area-inset-bottom))] right-5 sm:bottom-[calc(2rem+env(safe-area-inset-bottom))] sm:right-8",
             )}
             aria-label={t("aiAssistant.open")}
             onClick={openAiAssistant}
