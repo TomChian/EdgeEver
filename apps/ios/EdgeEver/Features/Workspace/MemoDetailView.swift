@@ -195,6 +195,7 @@ struct MemoDetailView: View {
                             Text(env.preferences.t("紫雾流光", en: "Lavender", pl: "Lawenda")).tag("lavender")
                             Text(env.preferences.t("经典便签", en: "Notepad", pl: "Notatnik")).tag("notepad")
                             Text(env.preferences.t("水墨宣纸", en: "Rice Paper", pl: "Papier ryżowy")).tag("xuan")
+                            Text(env.preferences.t("艺术拍立得", en: "Polaroid", pl: "Polaroid")).tag("polaroid")
                         }
                         .pickerStyle(.menu)
                     }

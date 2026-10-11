@@ -226,6 +226,7 @@ const MOBILE_THEME_OPTIONS: Array<{
   { id: "lavender", labelZh: "紫雾流光", labelEn: "Lavender", previewBg: "#f5f3ff", dotColor: "#7c3aed" },
   { id: "notepad", labelZh: "经典便签", labelEn: "Notepad", previewBg: "#fbf7ee", dotColor: "#c2410c" },
   { id: "xuan", labelZh: "水墨宣纸", labelEn: "Rice Paper", previewBg: "#f7f6f2", dotColor: "#b91c1c" },
+  { id: "polaroid", labelZh: "艺术拍立得", labelEn: "Polaroid", previewBg: "#f5f4ef", dotColor: "#18181b" },
 ];
 
 const MOBILE_FONT_OPTIONS: Array<{ id: NoteImageFontStyle; labelZh: string; labelEn: string }> = [

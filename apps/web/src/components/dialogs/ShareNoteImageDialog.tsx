@@ -16,6 +16,7 @@ import { copyImageBlobToClipboard } from "@/lib/clipboard";
 import {
   createNoteImage,
   downloadPreparedNoteImage,
+  NOTE_IMAGE_CARD_WIDTH_PIXELS,
   type DownloadNoteImageOptions,
   type NoteImageCardWidth,
   type NoteImageFontSize,
@@ -42,6 +43,7 @@ const THEME_OPTIONS: Array<{
   { id: "lavender", previewBg: "linear-gradient(135deg, #f5f3ff, #ddd6fe, #c4b5fd)", dotColor: "#7c3aed" },
   { id: "notepad", previewBg: "linear-gradient(135deg, #fbf7ee, #f4ede0)", dotColor: "#c2410c" },
   { id: "xuan", previewBg: "linear-gradient(135deg, #f7f6f2, #ebe8e1)", dotColor: "#b91c1c" },
+  { id: "polaroid", previewBg: "linear-gradient(135deg, #f5f4ef, #eae7de)", dotColor: "#18181b" },
 ];
 
 const FONT_OPTIONS: Array<{ id: NoteImageFontStyle; labelKey: string }> = [
@@ -81,6 +83,15 @@ export const ShareNoteImageDialog = ({
   const [showNotebook, setShowNotebook] = useState(false);
   const [showTags, setShowTags] = useState(false);
   const [showUpdatedAt, setShowUpdatedAt] = useState(true);
+  const [showReadingTime, setShowReadingTime] = useState(false);
+  const [showAuthor, setShowAuthor] = useState(false);
+  const [author, setAuthor] = useState(() => {
+    try {
+      return localStorage.getItem("edgeever_share_author_name") || "";
+    } catch {
+      return "";
+    }
+  });
   const [showBranding, setShowBranding] = useState(true);
   const [prepared, setPrepared] = useState<PreparedNoteImage | null>(null);
   const [previewUrl, setPreviewUrl] = useState("");
@@ -100,9 +111,11 @@ export const ShareNoteImageDialog = ({
     setShowNotebook(false);
     setShowTags(false);
     setShowUpdatedAt(true);
+    setShowReadingTime(false);
+    setShowAuthor(Boolean(author));
     setShowBranding(true);
     setCopyState("idle");
-  }, [open, source.title]);
+  }, [author, open, source.title]);
 
   useEffect(() => {
     if (!open) return;
@@ -124,6 +137,9 @@ export const ShareNoteImageDialog = ({
         showTags,
         showUpdatedAt,
         branding: showBranding,
+        author: showAuthor ? author : "",
+        showAuthor,
+        showReadingTime,
         format,
         notebook: showNotebook ? source.notebook : "",
         tags: showTags ? source.tags : [],
@@ -143,13 +159,16 @@ export const ShareNoteImageDialog = ({
     }, 180);
     return () => window.clearTimeout(timer);
   }, [
+    author,
     cardWidth,
     fontSize,
     fontStyle,
     format,
     open,
+    showAuthor,
     showBranding,
     showNotebook,
+    showReadingTime,
     showTags,
     showTitle,
     showUpdatedAt,
@@ -216,24 +235,32 @@ export const ShareNoteImageDialog = ({
         </DialogHeader>
 
         <div className="grid min-h-0 flex-1 gap-0 md:grid-cols-[minmax(0,1fr)_20rem]">
-          <div className="flex min-h-72 items-center justify-center overflow-auto bg-slate-100/90 p-4 sm:p-6 md:max-h-[72vh]">
-            {previewUrl && prepared ? (
-              <img
-                alt={t("editor.imageShare.previewAlt")}
-                className="mx-auto block h-auto max-w-full rounded-xl shadow-xl transition-all duration-200"
-                style={{ maxHeight: "calc(72vh - 3rem)" }}
-                src={previewUrl}
-              />
-            ) : error ? (
-              <div className="flex min-h-64 items-center justify-center text-xs leading-5 text-rose-600" role="alert">
-                {t("editor.imageExport.error")}
-              </div>
-            ) : (
-              <div className="flex min-h-64 items-center justify-center gap-2 text-xs leading-5 text-slate-500" role="status">
-                <LoaderCircle className="h-5 w-5 animate-spin text-slate-500" />
-                {t("editor.imageShare.generating")}
-              </div>
-            )}
+          <div className="relative flex min-h-72 flex-1 flex-col overflow-auto bg-slate-100/90 md:max-h-[75vh]">
+            <div className="flex min-h-full w-full flex-col items-center justify-start p-4 sm:p-6">
+              {previewUrl && prepared ? (
+                <div className="my-auto flex w-full items-center justify-center transition-all duration-150">
+                  <img
+                    alt={t("editor.imageShare.previewAlt")}
+                    className="block rounded-xl shadow-xl transition-all duration-150"
+                    style={{
+                      width: `${NOTE_IMAGE_CARD_WIDTH_PIXELS[cardWidth] || 800}px`,
+                      maxWidth: "100%",
+                      height: "auto",
+                    }}
+                    src={previewUrl}
+                  />
+                </div>
+              ) : error ? (
+                <div className="my-auto flex min-h-64 items-center justify-center text-xs leading-5 text-rose-600" role="alert">
+                  {t("editor.imageExport.error")}
+                </div>
+              ) : (
+                <div className="my-auto flex min-h-64 items-center justify-center gap-2 text-xs leading-5 text-slate-500" role="status">
+                  <LoaderCircle className="h-5 w-5 animate-spin text-slate-500" />
+                  {t("editor.imageShare.generating")}
+                </div>
+              )}
+            </div>
           </div>
 
           <div className="space-y-5 overflow-y-auto border-t border-slate-200 p-5 md:max-h-[72vh] md:border-l md:border-t-0">
@@ -354,12 +381,36 @@ export const ShareNoteImageDialog = ({
                   ["notebook", showNotebook, setShowNotebook],
                   ["tags", showTags, setShowTags],
                   ["updatedAt", showUpdatedAt, setShowUpdatedAt],
+                  ["readingTime", showReadingTime, setShowReadingTime],
+                  ["author", showAuthor, setShowAuthor],
                   ["branding", showBranding, setShowBranding],
                 ] as const).map(([key, checked, setChecked]) => (
-                  <label key={key} className="flex cursor-pointer items-center gap-2 text-xs text-slate-700">
-                    <Checkbox checked={checked} onCheckedChange={(value) => setChecked(value === true)} />
-                    {t(`editor.imageShare.fields.${key}`)}
-                  </label>
+                  <div key={key} className="space-y-1.5">
+                    <label className="flex cursor-pointer items-center gap-2 text-xs text-slate-700">
+                      <Checkbox checked={checked} onCheckedChange={(value) => setChecked(value === true)} />
+                      {t(`editor.imageShare.fields.${key}`)}
+                    </label>
+                    {key === "author" && showAuthor && (
+                      <div className="pl-6">
+                        <input
+                          type="text"
+                          value={author}
+                          onChange={(e) => {
+                            const val = e.target.value;
+                            setAuthor(val);
+                            try {
+                              localStorage.setItem("edgeever_share_author_name", val);
+                            } catch {
+                              // Ignore localStorage error
+                            }
+                          }}
+                          placeholder={t("editor.imageShare.authorPlaceholder")}
+                          className="h-7 w-full rounded border border-slate-300 px-2 text-xs text-slate-800 placeholder:text-slate-400 focus:border-emerald-500 focus:outline-none"
+                          maxLength={32}
+                        />
+                      </div>
+                    )}
+                  </div>
                 ))}
               </div>
             </fieldset>
@@ -392,9 +443,6 @@ export const ShareNoteImageDialog = ({
                 )}
               </p>
             ) : null}
-            {prepared && prepared.height > 12_000 ? (
-              <p className="text-xs leading-5 text-amber-700">{t("editor.imageShare.longImageWarning")}</p>
-            ) : null}
           </div>
         </div>
 
@@ -403,7 +451,7 @@ export const ShareNoteImageDialog = ({
             {t("editor.imageShare.copyFailed")}
           </p>
         ) : null}
-        <DialogFooter className="border-t border-slate-200 px-5 py-3.5">
+        <DialogFooter className="border-t border-slate-200 px-5 py-3">
           <Button variant="ghost" size="sm" onClick={() => onOpenChange(false)}>
             {t("common.cancel")}
           </Button>

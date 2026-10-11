@@ -1,5 +1,5 @@
 export type NoteImageFormat = "jpeg" | "png";
-export type NoteImageTheme = "slate" | "aurora" | "sunset" | "midnight" | "mint" | "notepad" | "xuan" | "lavender";
+export type NoteImageTheme = "slate" | "aurora" | "sunset" | "midnight" | "mint" | "notepad" | "xuan" | "lavender" | "polaroid";
 export type NoteImageBackground = NoteImageTheme | "warm";
 export type NoteImageFontStyle = "sans" | "serif" | "mono";
 export type NoteImageFontSize = "sm" | "md" | "lg";
@@ -45,6 +45,7 @@ export const NOTE_IMAGE_BACKGROUND_COLORS: Record<NoteImageBackground, string> =
   notepad: "#fbf7ee",
   xuan: "#f7f6f2",
   lavender: "#f5f3ff",
+  polaroid: "#f5f4ef",
   warm: "#fffbeb",
 };
 
@@ -268,6 +269,30 @@ export const NOTE_IMAGE_THEMES: Record<NoteImageTheme, ThemeStyleConfig> = {
     brandText: "#1e1b4b",
     brandMark: "#7c3aed",
   },
+  polaroid: {
+    canvasBg: "linear-gradient(145deg, #f5f4ef 0%, #ebe8e0 50%, #e2dfd5 100%)",
+    cardBg: "#ffffff",
+    cardBorder: "1px solid rgba(220, 216, 206, 0.9)",
+    cardShadow: "0 2px 5px rgba(28, 25, 23, 0.03), 0 16px 36px -6px rgba(28, 25, 23, 0.09), 0 32px 64px -12px rgba(28, 25, 23, 0.06)",
+    textColor: "#27272a",
+    headingColor: "#18181b",
+    metaColor: "#71717a",
+    metaBg: "#f4f4f5",
+    metaBorder: "#e4e4e7",
+    accentColor: "#18181b",
+    accentSubtle: "rgba(24, 24, 27, 0.12)",
+    linkBg: "rgba(24, 24, 27, 0.06)",
+    dividerColor: "#e4e4e7",
+    codeBg: "#fafafa",
+    codeBorder: "#e4e4e7",
+    codeColor: "#18181b",
+    quoteBg: "rgba(244, 244, 245, 0.8)",
+    quoteBorder: "#18181b",
+    tableThBg: "#f4f4f5",
+    tableBorder: "#e4e4e7",
+    brandText: "#18181b",
+    brandMark: "#16a06e",
+  },
 };
 
 export const NOTE_IMAGE_FONT_FAMILIES: Record<NoteImageFontStyle, string> = {
@@ -359,6 +384,16 @@ export const escapeCardHtml = (text: string): string =>
     .replace(/"/g, "&quot;")
     .replace(/'/g, "&#39;");
 
+export const estimateReadingStats = (html: string) => {
+  const text = html.replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim();
+  const cjkChars = (text.match(/[\u4e00-\u9fa5\u3040-\u30ff\uac00-\ud7af]/g) || []).length;
+  const nonCjkText = text.replace(/[\u4e00-\u9fa5\u3040-\u30ff\uac00-\ud7af]/g, " ").trim();
+  const words = nonCjkText ? nonCjkText.split(/\s+/).filter(Boolean).length : 0;
+  const totalCount = cjkChars + words;
+  const minutes = Math.max(1, Math.ceil(totalCount / 350));
+  return { minutes, totalCount };
+};
+
 export const buildNoteImageCardMarkup = ({
   title,
   notebook = "",
@@ -372,6 +407,10 @@ export const buildNoteImageCardMarkup = ({
   showTags = false,
   showUpdatedAt = true,
   showBranding = true,
+  author = "",
+  showAuthor = false,
+  showReadingTime = false,
+  readingTimeText = "",
 }: {
   title: string;
   notebook?: string;
@@ -385,6 +424,10 @@ export const buildNoteImageCardMarkup = ({
   showTags?: boolean;
   showUpdatedAt?: boolean;
   showBranding?: boolean;
+  author?: string;
+  showAuthor?: boolean;
+  showReadingTime?: boolean;
+  readingTimeText?: string;
 }) => {
   const isMono = fontStyle === "mono";
   const isNotepad = theme === "notepad";
@@ -400,7 +443,7 @@ export const buildNoteImageCardMarkup = ({
 
   const tearStripHtml = isNotepad ? `<div class="edgeever-card-tear-strip"></div>` : "";
 
-  const hasMeta = (showNotebook && Boolean(notebook)) || (showUpdatedAt && Boolean(updatedAt)) || (showTags && tags.length > 0);
+  const hasMeta = (showNotebook && Boolean(notebook)) || (showUpdatedAt && Boolean(updatedAt)) || (showTags && tags.length > 0) || showReadingTime;
   let metaHtml = "";
   if (hasMeta) {
     const parts: string[] = [];
@@ -412,6 +455,13 @@ export const buildNoteImageCardMarkup = ({
     if (showUpdatedAt && updatedAt) {
       parts.push(
         `<span class="edgeever-meta-pill edgeever-meta-date"><svg class="edgeever-icon" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="4" rx="2" ry="2"/><line x1="16" x2="16" y1="2" y2="6"/><line x1="8" x2="8" y1="2" y2="6"/><line x1="3" x2="21" y1="10" y2="10"/></svg>${escapeCardHtml(updatedAt)}</span>`,
+      );
+    }
+    if (showReadingTime) {
+      const stats = estimateReadingStats(bodyHtml);
+      const displayReading = readingTimeText || `${stats.minutes} min · ${stats.totalCount} words`;
+      parts.push(
+        `<span class="edgeever-meta-pill edgeever-meta-reading"><svg class="edgeever-icon" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>${escapeCardHtml(displayReading)}</span>`,
       );
     }
     if (showTags && tags.length > 0) {
@@ -435,16 +485,27 @@ export const buildNoteImageCardMarkup = ({
         <span class="edgeever-brand-name">EdgeEver</span>
       </div>`;
 
-  const footerHtml = showBranding
+  const hasAuthor = showAuthor && Boolean(author.trim());
+  let authorHtml = "";
+  if (hasAuthor) {
+    const trimmedAuthor = author.trim();
+    // Extract first letter or character for initials avatar
+    const firstChar = Array.from(trimmedAuthor)[0]?.toUpperCase() || "E";
+    authorHtml = `<span class="edgeever-footer-author"><span class="edgeever-footer-avatar" aria-hidden="true">${escapeCardHtml(firstChar)}</span><span class="edgeever-footer-author-name">${escapeCardHtml(trimmedAuthor)}</span></span><span class="edgeever-footer-sep">·</span>`;
+  }
+
+  const footerHtml = (showBranding || hasAuthor)
     ? `<footer class="edgeever-card-footer">
         <div class="edgeever-card-footer-meta">
-          <span class="edgeever-footer-slogan">Think, capture, and flourish</span>
+          ${authorHtml}
+          ${showBranding ? `<span class="edgeever-footer-slogan">Think, capture, and flourish</span>` : ""}
         </div>
-        ${brandBadgeHtml}
+        ${showBranding ? brandBadgeHtml : ""}
       </footer>`
     : "";
 
   return `<div class="edgeever-image-wrapper">
+  <div class="edgeever-grain-overlay" aria-hidden="true"></div>
   <article class="edgeever-image-card" data-theme="${theme}">
     ${tearStripHtml}
     ${terminalBarHtml}
@@ -519,6 +580,7 @@ export const generateCardCss = ({
     * { box-sizing: border-box; }
 
     .edgeever-image-wrapper {
+      position: relative;
       width: ${widthPx}px;
       padding: 38px 32px 44px;
       background: var(--ee-canvas-bg);
@@ -529,6 +591,16 @@ export const generateCardCss = ({
       -webkit-font-smoothing: antialiased;
       -moz-osx-font-smoothing: grayscale;
       font-feature-settings: "chws" 1;
+      overflow: hidden;
+    }
+
+    .edgeever-grain-overlay {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.055'/%3E%3C/svg%3E");
+      background-repeat: repeat;
+      z-index: 1;
     }
 
     .edgeever-image-card {
@@ -538,6 +610,7 @@ export const generateCardCss = ({
       box-shadow: var(--ee-card-shadow);
       padding: 40px 38px 36px;
       position: relative;
+      z-index: 2;
       overflow: hidden;
     }
 
@@ -693,16 +766,38 @@ export const generateCardCss = ({
     }
 
     .edgeever-card-body blockquote {
+      position: relative;
       margin: 1.3em 0;
       border-left: 4px solid var(--ee-quote-border);
       background: var(--ee-quote-bg);
-      padding: 12px 18px;
+      padding: 14px 18px 14px 24px;
       border-radius: 0 10px 10px 0;
       color: var(--ee-text-color);
       font-size: 0.98em;
       line-height: 1.75;
     }
+    .edgeever-card-body blockquote::before {
+      content: "“";
+      position: absolute;
+      top: -8px;
+      left: 6px;
+      font-size: 38px;
+      line-height: 1;
+      font-family: Georgia, "Songti SC", "Times New Roman", serif;
+      color: var(--ee-quote-border);
+      opacity: 0.28;
+      pointer-events: none;
+    }
     .edgeever-card-body blockquote p:last-child { margin-bottom: 0; }
+
+    .edgeever-card-body mark {
+      background: linear-gradient(104deg, rgba(254, 240, 138, 0) 1%, rgba(254, 240, 138, 0.88) 3%, rgba(254, 240, 138, 0.76) 98%);
+      padding: 0.1em 0.35em;
+      border-radius: 4px;
+      box-decoration-break: clone;
+      -webkit-box-decoration-break: clone;
+      color: inherit;
+    }
 
     .edgeever-card-body hr {
       margin: 1.8em 0;
@@ -837,10 +932,47 @@ export const generateCardCss = ({
     }
 
     .edgeever-card-footer-meta {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
       font-size: 12px;
       color: var(--ee-meta-color);
       font-weight: 500;
       opacity: 0.85;
+    }
+
+    .edgeever-footer-author {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-weight: 600;
+      color: var(--ee-heading-color);
+    }
+
+    .edgeever-footer-avatar {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: var(--ee-heading-color);
+      color: var(--ee-card-bg);
+      font-size: 10px;
+      font-weight: 700;
+      font-family: system-ui, -apple-system, sans-serif;
+      line-height: 1;
+      text-transform: uppercase;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
+      flex-shrink: 0;
+    }
+
+    .edgeever-footer-author-name {
+      letter-spacing: -0.01em;
+    }
+
+    .edgeever-footer-sep {
+      opacity: 0.45;
     }
 
     .edgeever-brand-badge {
@@ -864,6 +996,19 @@ export const generateCardCss = ({
       letter-spacing: -0.01em;
       color: var(--ee-brand-text);
     }
+
+    ${theme === "polaroid" ? `
+    .edgeever-image-card[data-theme="polaroid"] {
+      padding-bottom: 56px;
+      border-radius: 12px;
+    }
+    ` : ""}
+
+    ${theme === "midnight" ? `
+    .edgeever-image-card[data-theme="midnight"] {
+      box-shadow: 0 0 0 1px rgba(52, 211, 153, 0.16), 0 24px 60px -12px rgba(0, 0, 0, 0.82);
+    }
+    ` : ""}
 
     ${theme === "notepad" ? `
     .edgeever-image-card[data-theme="notepad"] .edgeever-card-body p,
