@@ -1,3 +1,4 @@
+import { AI_ASSISTANT_LAUNCHER_POSITION } from "@/lib/ai-assistant-launcher";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
@@ -2095,7 +2096,7 @@ export default function PosterEditorPane({
       </Dialog>
       {!readOnly && !aiAssistantOpen && <IconTooltip side="left" label={t("aiAssistant.open")}>
         <Button variant="outline" size="icon" data-ai-assistant-launcher="" aria-label={t("aiAssistant.open")}
-          className="absolute bottom-[calc(4rem+env(safe-area-inset-bottom))] right-5 sm:bottom-[calc(4.75rem+env(safe-area-inset-bottom))] sm:right-8 z-30 size-11 rounded-full border-slate-200 bg-card text-slate-950 shadow-[0_8px_24px_rgba(15,23,42,0.14)]"
+          className={`${AI_ASSISTANT_LAUNCHER_POSITION} absolute z-30 size-11 rounded-full border-slate-200 bg-card text-slate-950 shadow-[0_8px_24px_rgba(15,23,42,0.14)]`}
           onClick={() => setAiSidebarOpen(true)}><Sparkles className="size-5" strokeWidth={1.75} /></Button>
       </IconTooltip>}
     </div>
