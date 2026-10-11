@@ -19,6 +19,8 @@ import { Alert, Pressable, Text, TextInput } from "../components/LocalizedText";
 import LocalTiptapEditor, { type LocalTiptapEditorRef } from "../components/LocalTiptapEditor";
 import { MobileAiAssistantModal } from "../components/MobileAiAssistantModal";
 import { MobileResourceActions } from "../components/MobileResourceActions";
+import { ZoomableImagePreview } from "../components/ZoomableImagePreview";
+import type { ImageSize } from "../lib/mobile-image-zoom";
 import { SAFE_DOM_WEBVIEW_PROPS } from "../lib/mobile-dom";
 import { getNextMobileNoteSearchIndex } from "../lib/mobile-note-search";
 import { hasMobilePoster, hasMobileInfographic, hasMobileStructuredTable, hasMobileVisualDiagram, resolveMobileMemoViewerContent } from "../lib/mobile-diagram";
@@ -238,6 +240,8 @@ const AuthenticatedResourceImage = ({
   href,
   loadResourceBlob,
   onLoadFailure,
+  onDimensions,
+  resizeMultiplier,
   resizeMode = "cover",
   session,
   style,
@@ -247,6 +251,8 @@ const AuthenticatedResourceImage = ({
   href: string;
   loadResourceBlob?: ((resourceUrl: string) => Promise<Blob>) | null;
   onLoadFailure?: (failure: ProtectedResourceLoadFailure) => void;
+  onDimensions?: (size: ImageSize) => void;
+  resizeMultiplier?: number;
   resizeMode?: "center" | "contain" | "cover" | "repeat" | "stretch";
   session: SessionLike;
   style: StyleProp<ImageStyle>;
@@ -306,6 +312,7 @@ const AuthenticatedResourceImage = ({
         }
         if (result.aspectRatio) {
           setAspectRatio(result.aspectRatio);
+          onDimensions?.({ width: result.aspectRatio * 1000, height: 1000 });
         }
         setSvgXml(result.xml);
       });
@@ -315,7 +322,7 @@ const AuthenticatedResourceImage = ({
         svgSourceKeyRef.current = "";
       }
     };
-  }, [svgSourceKey]);
+  }, [svgSourceKey, onDimensions]);
 
   const loadSvgFallback = () => {
     if (svgRequestStartedRef.current || !displaySource) {
@@ -329,6 +336,7 @@ const AuthenticatedResourceImage = ({
         }
         if (result.aspectRatio) {
           setAspectRatio(result.aspectRatio);
+          onDimensions?.({ width: result.aspectRatio * 1000, height: 1000 });
         }
         setSvgXml(result.xml);
       });
@@ -363,10 +371,13 @@ const AuthenticatedResourceImage = ({
         const { height, width } = event.nativeEvent.source;
         if (height > 0 && width > 0) {
           setAspectRatio(width / height);
+          onDimensions?.({ width, height });
         }
       }}
       onError={loadSvgFallback}
       resizeMethod={Platform.OS === "android" ? "resize" : "auto"}
+      // Supported by Android's native Image view; RN 0.86's TS interface omits it.
+      {...(Platform.OS === "android" && resizeMultiplier ? { resizeMultiplier } : {})}
       resizeMode={resizeMode}
       source={displaySource}
       style={imageStyle}
@@ -1763,11 +1774,10 @@ export const MemoDetailModal = ({
         <Modal animationType="fade" onRequestClose={() => setImagePreview(null)} transparent visible={Boolean(imagePreview)}>
           <View style={resourceImageStyles.previewBackdrop}>
             {imagePreview ? (
-              <Pressable
+              <ZoomableImagePreview
+                key={imagePreview.source}
                 accessibilityHint={resolvedLocale !== "zh-CN" ? "Long press for image actions" : "长按打开图片操作"}
                 accessibilityLabel={imagePreview.alt || (resolvedLocale !== "zh-CN" ? "Image preview" : "图片预览")}
-                accessibilityRole="image"
-                delayLongPress={400}
                 onLongPress={() => {
                   // Long-press fullscreen preview → same resource sheet as ⋯ in the note.
                   const target = getMobileImageTarget(imagePreview.source, imagePreview.alt);
@@ -1775,18 +1785,20 @@ export const MemoDetailModal = ({
                     setResourceTarget(target);
                   }
                 }}
-                style={resourceImageStyles.previewImagePressable}
-              >
-                <AuthenticatedResourceImage
-                  alt={imagePreview.alt}
-                  href={imagePreview.source}
-                  loadResourceBlob={client?.getResourceBlob}
-                  onLoadFailure={imageLoadFailureNotifier}
-                  resizeMode="contain"
-                  session={session}
-                  style={resourceImageStyles.previewImage}
-                />
-              </Pressable>
+                renderImage={(onDimensions, resizeMultiplier) => (
+                  <AuthenticatedResourceImage
+                    alt={imagePreview.alt}
+                    href={imagePreview.source}
+                    loadResourceBlob={client?.getResourceBlob}
+                    onLoadFailure={imageLoadFailureNotifier}
+                    onDimensions={onDimensions}
+                    resizeMultiplier={resizeMultiplier}
+                    resizeMode="contain"
+                    session={session}
+                    style={resourceImageStyles.previewImage}
+                  />
+                )}
+              />
             ) : null}
             <Pressable
               accessibilityLabel={resolvedLocale !== "zh-CN" ? "Close image preview" : "关闭图片预览"}
@@ -2217,11 +2229,6 @@ const resourceImageStyles = StyleSheet.create({
     width: 46,
   },
   previewImage: {
-    height: "100%",
-    width: "100%",
-  },
-  previewImagePressable: {
-    flex: 1,
     height: "100%",
     width: "100%",
   },
