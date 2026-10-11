@@ -1732,6 +1732,7 @@ export const zhCN = {
       workbuddyMissingHint: "安装 WorkBuddy 桌面版即可使用其内置 ACP，无需另装 CodeBuddy；也可单独安装 CodeBuddy CLI。",
       workbuddyCnLoginHint: "ACP 会尝试使用已保存的登录；若聊天仍提示需要登录，请使用微信或组织指定方式完成 ACP 认证。",
       workbuddyIntlLoginHint: "ACP 会尝试使用已保存的登录；若聊天仍提示需要登录，请使用 Google/GitHub 或组织指定方式完成 ACP 认证。",
+      workbuddyCredentialsUnavailable: "无法读取 WorkBuddy 保存的登录凭据，ACP 当前不可用。请先改用其他本机 Agent；重复点击登录无法解决此问题。",
       workbuddyConnectionReady: "ACP 已连接，聊天时验证登录",
       installing: "正在安装并检查…",
       installFailed: "安装或连接检查失败，原版本已保留。",

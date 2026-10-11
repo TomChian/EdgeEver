@@ -1721,6 +1721,7 @@ export const ja = {
       workbuddyMissingHint: "WorkBuddy デスクトップアプリには ACP プログラムが含まれるため、CodeBuddy の別途インストールは不要です。単体の CodeBuddy CLI も利用できます。",
       workbuddyCnLoginHint: "ACP は保存済みのログインを試します。チャットでログインが必要な場合は WeChat または組織指定の方法で ACP 認証を行ってください。",
       workbuddyIntlLoginHint: "ACP は保存済みのログインを試します。チャットでログインが必要な場合は Google/GitHub または組織指定の方法で ACP 認証を行ってください。",
+      workbuddyCredentialsUnavailable: "WorkBuddy の保存済みログイン情報を読み取れないため、ACP は利用できません。当面は別のローカル Agent を使用してください。再ログインでは解決できません。",
       workbuddyConnectionReady: "ACP 接続済み・ログインはチャット時に確認",
       installing: "インストールして確認中…",
       installFailed: "インストールまたは接続確認に失敗しました。以前のバージョンは保持されています。",

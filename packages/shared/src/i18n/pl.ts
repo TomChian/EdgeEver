@@ -1721,6 +1721,7 @@ export const pl = {
       workbuddyMissingHint: "Aplikacja desktopowa WorkBuddy zawiera program ACP; osobna instalacja CodeBuddy nie jest potrzebna. Działa też samodzielny CodeBuddy CLI.",
       workbuddyCnLoginHint: "ACP najpierw próbuje użyć zapisanego logowania. Jeśli czat nadal wymaga zalogowania, użyj WeChat lub metody logowania ACP swojej organizacji.",
       workbuddyIntlLoginHint: "ACP najpierw próbuje użyć zapisanego logowania. Jeśli czat nadal wymaga zalogowania, użyj Google/GitHub lub metody logowania ACP swojej organizacji.",
+      workbuddyCredentialsUnavailable: "Nie można odczytać zapisanych danych logowania WorkBuddy, więc ACP jest niedostępne. Na razie użyj innego lokalnego agenta; ponowne logowanie nie rozwiąże problemu.",
       workbuddyConnectionReady: "Połączono z ACP; logowanie jest sprawdzane podczas czatu",
       installing: "Instalowanie i sprawdzanie…",
       installFailed: "Instalacja lub sprawdzenie połączenia nie powiodło się. Zachowano poprzednią wersję.",

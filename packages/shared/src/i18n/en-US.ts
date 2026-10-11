@@ -1732,6 +1732,7 @@ export const enUS = {
       workbuddyMissingHint: "The WorkBuddy desktop app includes the ACP program; no separate CodeBuddy installation is needed. A standalone CodeBuddy CLI also works.",
       workbuddyCnLoginHint: "ACP tries saved sign-in first. If chat still requires login, use WeChat or your organization's ACP sign-in method.",
       workbuddyIntlLoginHint: "ACP tries saved sign-in first. If chat still requires login, use Google/GitHub or your organization's ACP sign-in method.",
+      workbuddyCredentialsUnavailable: "WorkBuddy saved sign-in credentials could not be read, so ACP is unavailable. Use another local Agent for now; retrying sign-in cannot resolve this issue.",
       workbuddyConnectionReady: "ACP connected; sign-in is checked during chat",
       installing: "Installing and checking…",
       installFailed: "Installation or connection check failed. The previous version was kept.",
