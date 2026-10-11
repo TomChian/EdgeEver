@@ -75,7 +75,7 @@ import {
   posterPrimitiveFromObject,
   platformFor,
 } from "@/lib/poster-design/templates";
-import { savePosterMemo } from "@/lib/poster-save";
+import { canRestorePosterDraft, classifyPosterUpdate, posterMemoContent, savePosterMemo } from "@/lib/poster-save";
 import { copyImageBlobToClipboard } from "@/lib/clipboard";
 import { compressImageForUpload } from "@/lib/image-compression";
 import {
@@ -199,6 +199,7 @@ export default function PosterEditorPane({
     title: string;
     document: PosterDocument;
     baseHash: string;
+    baseContent?: string;
     tagsText?: string;
   } | null>(null);
   const [, setHistoryVersion] = useState(0);
@@ -211,6 +212,7 @@ export default function PosterEditorPane({
   const selectionSync = useRef(false);
   const session = useRef<MemoEditSession | null>(null),
     currentMemo = useRef(memo);
+  const previousSaveBase = useRef<MemoDetail | null>(null);
   const current = useRef({ title, document, tagsText });
   current.current = { title, document, tagsText };
   const selected = useRef(selectedIds);
@@ -609,8 +611,14 @@ export default function PosterEditorPane({
   }, [memo.id, readOnly]);
 
   useEffect(() => {
-    if (memo.contentHash === currentMemo.current.contentHash) return;
-    if (dirty || saveLock.current) {
+    const update = classifyPosterUpdate(memo, currentMemo.current, dirty, Boolean(saveLock.current), previousSaveBase.current);
+    if (update === "defer" || update === "ignore") return;
+    if (update === "rebase") {
+      // Advance optimistic checks while retaining any newer local edits.
+      currentMemo.current = memo;
+      return;
+    }
+    if (update === "conflict") {
       setError(t("poster.remoteChanged"));
       return;
     }
@@ -640,7 +648,7 @@ export default function PosterEditorPane({
     undo.current = [];
     redo.current = [];
     setHistoryVersion((version) => version + 1);
-  }, [memo.contentHash]);
+  }, [memo.contentHash, memo.revision, saving]);
 
   useEffect(() => {
     const host = workbenchHost.current;
@@ -945,15 +953,17 @@ export default function PosterEditorPane({
           !data.document.previewResourceId
             ? await renderPosterBlob(data.document, readResource, "png", true)
             : undefined;
+        const saveBase = currentMemo.current;
         const result = await savePosterMemo(
           repository,
-          currentMemo.current,
+          saveBase,
           data.document,
           data.title,
           session.current!.id,
           preview,
           parseTagsText(data.tagsText),
         );
+        previousSaveBase.current = saveBase;
         currentMemo.current = result.memo;
         loadedArt.current = artwork(data.document);
         setSaved(captured);
@@ -994,6 +1004,7 @@ export default function PosterEditorPane({
           document,
           tagsText,
           baseHash: currentMemo.current.contentHash,
+          baseContent: posterMemoContent(currentMemo.current),
         }),
       );
     } catch {
@@ -1488,7 +1499,7 @@ export default function PosterEditorPane({
           <Button
             size="sm"
             onClick={() => {
-              if (recovery.baseHash !== currentMemo.current.contentHash) {
+              if (!canRestorePosterDraft(recovery, currentMemo.current)) {
                 setError(t("poster.remoteChanged"));
                 return;
               }
